@@ -19,7 +19,7 @@ void calculate_distances(){
 		i = 0;
 		long double delta = 999999999.9999999;
 		while(i < mem_types){
-			long double dist = abs(sqrt(abs((means[i] - bw_it->avg_bw))*abs((means[i] - bw_it->avg_bw))));
+			long double dist = abs(sqrt(abs((means[i] - bw_it->sam_bw))*abs((means[i] - bw_it->sam_bw))));
 			if(dist < delta){
 				delta = dist;
 				if(strcmp(bw_it->mem_type, mem_tech[i])!=0){
@@ -48,7 +48,7 @@ void calculate_mean(){
 		int j = 0;
 		means[i] = 0.0;
 		while(j < cluster_sizes[i]){
-			means[i] += bw_it->avg_bw;
+			means[i] += bw_it->sam_bw;
 			j++;
 			bw_it = bw_it->next;
 		}
@@ -102,7 +102,7 @@ void sort_list(struct numa_node_bw * new_node){
 	struct numa_node_bw * bw_it = numa_list_head;
 	struct numa_node_bw * prev_bw_it = NULL;
 	while(bw_it != NULL){
-		if((bw_it->avg_bw > new_node->avg_bw)){
+		if((bw_it->sam_bw > new_node->sam_bw)){
 			if(prev_bw_it == NULL){
 				new_node->next = bw_it;
 				numa_list_head = new_node;
@@ -158,7 +158,9 @@ struct labelled_numa_nodes * identify_numa(int no_of_labels, char ** labels){
                 }
                 i++;
         }
-	size_t size = 512*1024*1024;
+	int buf_s = 128;
+	int iters = 3;
+	size_t size = buf_s*1024*1024;
 	int *a, *b;
 	clock_t start, end;
         struct timespec begin, stop;
@@ -196,7 +198,7 @@ struct labelled_numa_nodes * identify_numa(int no_of_labels, char ** labels){
 		long double linlat_avg=0.0;
 		long double diflat_avg=0.0;
 		long double samlat_avg=0.0;
-		for(k = 0; k < 1; k++){
+		for(k = 0; k < iters; k++){
 			a = (int*)numa_alloc_onnode(size, numa_node_ids[i]);
 			b = (int*)numa_alloc_onnode(size, numa_node_ids[i]);
 			volatile int j = 0;
@@ -207,7 +209,7 @@ struct labelled_numa_nodes * identify_numa(int no_of_labels, char ** labels){
 			for(j = 0; j < (size/sizeof(int)); j++)
 				a[j] = 1;
 			clock_gettime( CLOCK_REALTIME, &stop);
-			wbw_avg += 512/(( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION);
+			wbw_avg += buf_s/(( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION);
 			wlat_avg += ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			int t;
 			clock_gettime( CLOCK_REALTIME, &begin);
@@ -216,64 +218,64 @@ struct labelled_numa_nodes * identify_numa(int no_of_labels, char ** labels){
                 	        t = a[j];
 			clock_gettime( CLOCK_REALTIME, &stop);
 			t= t + j;
-			rbw_avg += 512/(( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION);
+			rbw_avg += buf_s/(( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION);
 			rlat_avg += ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			clock_gettime( CLOCK_REALTIME, &begin);
 #pragma omp parallel for
 			for(j = 0; j < (size/sizeof(int)); j++)
                             a[j] += a[j];
 			clock_gettime( CLOCK_REALTIME, &stop);
-            		rwbw_avg += 512/(( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION);
+            		rwbw_avg += buf_s/(( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION);
             		rwlat_avg += ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
-			clock_gettime( CLOCK_REALTIME, &begin);
+/*			clock_gettime( CLOCK_REALTIME, &begin);
 #pragma omp parallel for
 			for(j = 0; j < (size/sizeof(int)); j++)
                             a[((int)rand())%((int)(size/sizeof(int)))] += a[((int)rand())%((int)(size/sizeof(int)))];
 			clock_gettime( CLOCK_REALTIME, &stop);
-            		ranbw_avg += 512/(( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION);
-            		ranlat_avg += ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
-			clock_gettime( CLOCK_REALTIME, &begin);
+            		ranbw_avg += buf_s/(( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION);
+            		ranlat_avg += ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;*/
+/*			clock_gettime( CLOCK_REALTIME, &begin);
 #pragma omp parallel for
 			for(j = 0; j < (size/sizeof(int)); j++)
                             a[(j+10)%((int)(size/sizeof(int)))] += a[(j+2*j)%((int)(size/sizeof(int)))];
 			clock_gettime( CLOCK_REALTIME, &stop);
-            		linbw_avg += 512/(( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION);
-            		linlat_avg += ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
+            		linbw_avg += buf_s/(( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION);
+            		linlat_avg += ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;*/
 			clock_gettime( CLOCK_REALTIME, &begin);
 #pragma omp parallel for
 			for(j = 0; j < (size/sizeof(int)); j++)
                             a[j] += b[j];
 			clock_gettime( CLOCK_REALTIME, &stop);
-                        sambw_avg += 512/(( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION);
+                        sambw_avg += buf_s/(( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION);
                         samlat_avg += ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
-			clock_gettime( CLOCK_REALTIME, &begin);
+/*			clock_gettime( CLOCK_REALTIME, &begin);
 #pragma omp parallel for
 			for(j = 0; j < (size/sizeof(int)); j++){
                             a[j] += 20 +a[j];
 			    b[j] += 40 +b[j];
                         }
 			clock_gettime( CLOCK_REALTIME, &stop);
-                        difbw_avg += 512/(( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION);
-                        diflat_avg += ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
+                        difbw_avg += buf_s/(( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION);
+                        diflat_avg += ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;*/
 			numa_free(a, size);
 			numa_free(b, size);
 		}
 		struct numa_node_bw * node_bw = (struct numa_node_bw *)malloc(sizeof(struct numa_node_bw));
 		node_bw->numa_id = numa_node_ids[i];
-		node_bw->write_bw = wbw_avg/1;
-		node_bw->read_bw = rbw_avg/1;
-		node_bw->rw_bw = rwbw_avg/1;
-		node_bw->ran_bw = ranbw_avg/1;
-		node_bw->lin_bw = linbw_avg/1;
-		node_bw->dif_bw = difbw_avg/1;
-		node_bw->sam_bw = sambw_avg/1;
-		node_bw->write_lat = ((long double)wlat_avg/(long double)(size/sizeof(int)))/1;
-		node_bw->read_lat = ((long double)rlat_avg/(long double)(size/sizeof(int)))/1;
-        	node_bw->rw_lat = ((long double)rwlat_avg/(long double)(size/sizeof(int)))/1;
-        	node_bw->ran_lat = ((long double)ranlat_avg/(long double)(size/sizeof(int)))/1;
-        	node_bw->lin_lat = ((long double)linlat_avg/(long double)(size/sizeof(int)))/1;
-		node_bw->dif_lat = ((long double)diflat_avg/(long double)(size/sizeof(int)))/1;
-		node_bw->sam_lat = ((long double)samlat_avg/(long double)(size/sizeof(int)))/1;
+		node_bw->write_bw = wbw_avg/iters;
+		node_bw->read_bw = rbw_avg/iters;
+		node_bw->rw_bw = rwbw_avg/iters;
+		node_bw->ran_bw = ranbw_avg/iters;
+		node_bw->lin_bw = linbw_avg/iters;
+		node_bw->dif_bw = difbw_avg/iters;
+		node_bw->sam_bw = sambw_avg/iters;
+		node_bw->write_lat = ((long double)wlat_avg/(long double)(size/sizeof(int)))/iters;
+		node_bw->read_lat = ((long double)rlat_avg/(long double)(size/sizeof(int)))/iters;
+        	node_bw->rw_lat = ((long double)rwlat_avg/(long double)(size/sizeof(int)))/iters;
+        	node_bw->ran_lat = ((long double)ranlat_avg/(long double)(size/sizeof(int)))/iters;
+        	node_bw->lin_lat = ((long double)linlat_avg/(long double)(size/sizeof(int)))/iters;
+		node_bw->dif_lat = ((long double)diflat_avg/(long double)(size/sizeof(int)))/iters;
+		node_bw->sam_lat = ((long double)samlat_avg/(long double)(size/sizeof(int)))/iters;
 		node_bw->avg_bw = (node_bw->write_bw + node_bw->read_bw)/2;
 		node_bw->avg_lat = (node_bw->write_lat + node_bw->read_lat)/2;
 		node_bw->next = NULL;
@@ -288,6 +290,6 @@ struct labelled_numa_nodes * identify_numa(int no_of_labels, char ** labels){
 	}
 	classify();
 	insert_ids();
-	//write_config_file();
+	write_config_file();
 	return type_id_list;
 }
