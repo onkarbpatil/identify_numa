@@ -2,7 +2,7 @@
 
 thr=8
 export OMP_NUM_THREADS=1
-./numatest_omp DRAM HBM
+./numatest
 #cp sicm_numa_config sicm_numa_config_o1
 while [ $thr -lt 97 ]; do
 	export OMP_NUM_THREADS=$thr
