@@ -582,7 +582,7 @@ redo27:
                         for(j =0; j < (size/sizeof(double)); j++){
                             a[stride%(size/sizeof(double))] = h[stride%(size/sizeof(double))];
 			    if((j%8 == 0)&&(j != 0))
-				stride = j*4718592; //65536 for KNL
+				stride = j*65536; //65536 for KNL
 			    else
 				stride++;
                         }
