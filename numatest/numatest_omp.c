@@ -150,10 +150,10 @@ void numatest(int argc, char ** argv){
                 }
                 i++;
         }
-	int mbs = 1024;
+	int mbs = 256*1024;
 	size_t size = mbs*1024*1024;
-	int r_size = 32768;
-	int c_size = 32768;
+	int r_size = 16*32768;
+	int c_size = 16*32768;
 	double *a, *b, *c, *d, *e, *f, *g, *h;
 	double **aa, **bb, **cc;
 	clock_t start, end;

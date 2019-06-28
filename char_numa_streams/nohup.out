@@ -1,0 +1,222 @@
+rm -f  stream_numa_char
+mpicc -o stream_numa_char test2.c stream_numa_char.c stream_numa_char.h -O2 -fopenmp -lnuma -lm
+stream_numa_char.c: In function 'stream_numa_char_omp':
+stream_numa_char.c:289:12: warning: implicit declaration of function 'omp_get_num_threads' [-Wimplicit-function-declaration]
+     numt = omp_get_num_threads();
+            ^~~~~~~~~~~~~~~~~~~
+MPI
+Warning: Process to core binding is enabled and OMP_NUM_THREADS is set to non-zero (1) value
+If your program has OpenMP sections, this can cause over-subscription of cores and consequently poor performance
+To avoid this, please re-run your application after setting MV2_ENABLE_AFFINITY=0
+Use MV2_USE_THREAD_WARNING=0 to suppress this message
+0 NVME 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 67498.491073 12197.414987 101683.542056 20968.273302 11154.529214 5763.860918 0.000000
+1 NVME 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 43954.084047 9374.119327 95995.043906 20811.123394 11100.037680 5714.274761 0.000000
+Stream No: 1 0 1 
+Stream No: 2 0 1 
+Stream No: 3 0 1 
+Stream No: 4 0 1 
+Stream No: 5 0 1 
+Stream No: 6 0 1 
+Stream No: 7 0 1 
+Stream No: 8 0 1 
+Stream No: 9 0 1 
+Stream No: 10 0 1 
+Stream No: 11 0 1 
+Stream No: 12 0 1 
+Stream No: 13 0 1 
+Stream No: 14 0 1 
+Stream No: 15 0 1 
+Stream No: 16 0 1 
+Stream No: 17 0 1 
+Stream No: 18 0 1 
+Stream No: 19 0 1 
+Stream No: 20 0 1 
+Stream No: 21 0 1 
+Stream No: 22 0 1 
+Stream No: 23 0 1 
+Stream No: 24 0 1 
+Stream No: 25 0 1 
+Stream No: 26 0 1 
+Stream No: 27 0 1 
+Warning: Process to core binding is enabled and OMP_NUM_THREADS is set to non-zero (1) value
+If your program has OpenMP sections, this can cause over-subscription of cores and consequently poor performance
+To avoid this, please re-run your application after setting MV2_ENABLE_AFFINITY=0
+Use MV2_USE_THREAD_WARNING=0 to suppress this message
+Warning: Process to core binding is enabled and OMP_NUM_THREADS is set to non-zero (1) value
+If your program has OpenMP sections, this can cause over-subscription of cores and consequently poor performance
+To avoid this, please re-run your application after setting MV2_ENABLE_AFFINITY=0
+Use MV2_USE_THREAD_WARNING=0 to suppress this message
+Warning: Process to core binding is enabled and OMP_NUM_THREADS is set to non-zero (1) value
+If your program has OpenMP sections, this can cause over-subscription of cores and consequently poor performance
+To avoid this, please re-run your application after setting MV2_ENABLE_AFFINITY=0
+Use MV2_USE_THREAD_WARNING=0 to suppress this message
+Warning: Process to core binding is enabled and OMP_NUM_THREADS is set to non-zero (1) value
+If your program has OpenMP sections, this can cause over-subscription of cores and consequently poor performance
+To avoid this, please re-run your application after setting MV2_ENABLE_AFFINITY=0
+Use MV2_USE_THREAD_WARNING=0 to suppress this message
+Warning: Process to core binding is enabled and OMP_NUM_THREADS is set to non-zero (1) value
+If your program has OpenMP sections, this can cause over-subscription of cores and consequently poor performance
+To avoid this, please re-run your application after setting MV2_ENABLE_AFFINITY=0
+Use MV2_USE_THREAD_WARNING=0 to suppress this message
+Warning: Process to core binding is enabled and OMP_NUM_THREADS is set to non-zero (1) value
+If your program has OpenMP sections, this can cause over-subscription of cores and consequently poor performance
+To avoid this, please re-run your application after setting MV2_ENABLE_AFFINITY=0
+Use MV2_USE_THREAD_WARNING=0 to suppress this message
+Warning: Process to core binding is enabled and OMP_NUM_THREADS is set to non-zero (1) value
+If your program has OpenMP sections, this can cause over-subscription of cores and consequently poor performance
+To avoid this, please re-run your application after setting MV2_ENABLE_AFFINITY=0
+Use MV2_USE_THREAD_WARNING=0 to suppress this message
+Warning: Process to core binding is enabled and OMP_NUM_THREADS is set to non-zero (1) value
+If your program has OpenMP sections, this can cause over-subscription of cores and consequently poor performance
+To avoid this, please re-run your application after setting MV2_ENABLE_AFFINITY=0
+Use MV2_USE_THREAD_WARNING=0 to suppress this message
+Warning: Process to core binding is enabled and OMP_NUM_THREADS is set to non-zero (1) value
+If your program has OpenMP sections, this can cause over-subscription of cores and consequently poor performance
+To avoid this, please re-run your application after setting MV2_ENABLE_AFFINITY=0
+Use MV2_USE_THREAD_WARNING=0 to suppress this message
+Warning: Process to core binding is enabled and OMP_NUM_THREADS is set to non-zero (1) value
+If your program has OpenMP sections, this can cause over-subscription of cores and consequently poor performance
+To avoid this, please re-run your application after setting MV2_ENABLE_AFFINITY=0
+Use MV2_USE_THREAD_WARNING=0 to suppress this message
+Warning: Process to core binding is enabled and OMP_NUM_THREADS is set to non-zero (1) value
+If your program has OpenMP sections, this can cause over-subscription of cores and consequently poor performance
+To avoid this, please re-run your application after setting MV2_ENABLE_AFFINITY=0
+Use MV2_USE_THREAD_WARNING=0 to suppress this message
+Warning: Process to core binding is enabled and OMP_NUM_THREADS is set to non-zero (1) value
+If your program has OpenMP sections, this can cause over-subscription of cores and consequently poor performance
+To avoid this, please re-run your application after setting MV2_ENABLE_AFFINITY=0
+Use MV2_USE_THREAD_WARNING=0 to suppress this message
+rm -f  stream_numa_char
+mpicc -o stream_numa_char test2.c stream_numa_char.c stream_numa_char.h -O2 -fopenmp -lnuma -lm
+stream_numa_char.c: In function 'stream_numa_char_omp':
+stream_numa_char.c:289:12: warning: implicit declaration of function 'omp_get_num_threads' [-Wimplicit-function-declaration]
+     numt = omp_get_num_threads();
+            ^~~~~~~~~~~~~~~~~~~
+MPI
+Warning: Process to core binding is enabled and OMP_NUM_THREADS is set to non-zero (1) value
+If your program has OpenMP sections, this can cause over-subscription of cores and consequently poor performance
+To avoid this, please re-run your application after setting MV2_ENABLE_AFFINITY=0
+Use MV2_USE_THREAD_WARNING=0 to suppress this message
+0 NVME 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 72320.233993 10910.120345 45705.983982 20996.352461 11150.159515 5787.219582 0.000000
+1 NVME 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 46085.586089 8460.571564 43206.994554 20800.154958 10994.411276 5767.910375 0.000000
+Stream No: 1 0 1 
+Stream No: 2 0 1 
+Stream No: 3 0 1 
+Stream No: 4 0 1 
+Stream No: 5 0 1 
+Stream No: 6 0 1 
+Stream No: 7 0 1 
+Stream No: 8 0 1 
+Stream No: 9 0 1 
+Stream No: 10 0 1 
+Stream No: 11 0 1 
+Stream No: 12 0 1 
+Stream No: 13 0 1 
+Stream No: 14 0 1 
+Stream No: 15 0 1 
+Stream No: 16 0 1 
+Stream No: 17 0 1 
+Stream No: 18 0 1 
+Stream No: 19 0 1 
+Stream No: 20 0 1 
+Stream No: 21 0 1 
+Stream No: 22 0 1 
+Stream No: 23 0 1 
+Stream No: 24 0 1 
+Stream No: 25 0 1 
+Stream No: 26 0 1 
+Stream No: 27 0 1 
+Warning: Process to core binding is enabled and OMP_NUM_THREADS is set to non-zero (1) value
+If your program has OpenMP sections, this can cause over-subscription of cores and consequently poor performance
+To avoid this, please re-run your application after setting MV2_ENABLE_AFFINITY=0
+Use MV2_USE_THREAD_WARNING=0 to suppress this message
+Warning: Process to core binding is enabled and OMP_NUM_THREADS is set to non-zero (1) value
+If your program has OpenMP sections, this can cause over-subscription of cores and consequently poor performance
+To avoid this, please re-run your application after setting MV2_ENABLE_AFFINITY=0
+Use MV2_USE_THREAD_WARNING=0 to suppress this message
+slurmstepd: error: couldn't chdir to `/home/opatil/idnuma/identify_numa/char_numa_streams': No such file or directory: going to /tmp instead
+slurmstepd: error: execve(): /home/opatil/mpich-3.3.1/build/bin/hydra_pmi_proxy: No such file or directory
+srun: error: c29: task 23: Exited with exit code 2
+slurmstepd: error: run_script_as_user: couldn't change working dir to /home/opatil/idnuma/identify_numa/char_numa_streams: No such file or directory
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+slurmstepd: error: *** STEP 121916.4 ON c0 CANCELLED AT 2019-06-26T16:56:31 ***
+[mpiexec@c0] control_cb (pm/pmiserv/pmiserv_cb.c:208): assert (!closed) failed
+[mpiexec@c0] HYDT_dmxu_poll_wait_for_event (tools/demux/demux_poll.c:77): callback returned error status
+[mpiexec@c0] HYD_pmci_wait_for_completion (pm/pmiserv/pmiserv_pmci.c:196): error waiting for event
+[mpiexec@c0] main (ui/mpich/mpiexec.c:336): process manager error waiting for completion
+srun: error: SLURM job 121916 has expired.
+srun: Check SLURM_JOB_ID environment variable for expired or invalid job.
+rm -f  stream_numa_char
+mpicc -o stream_numa_char test2.c stream_numa_char.c stream_numa_char.h -O2 -fopenmp -lnuma -lm
+stream_numa_char.c: In function 'stream_numa_char_omp':
+stream_numa_char.c:289:12: warning: implicit declaration of function 'omp_get_num_threads' [-Wimplicit-function-declaration]
+     numt = omp_get_num_threads();
+            ^~~~~~~~~~~~~~~~~~~
+MPI
+Warning: Process to core binding is enabled and OMP_NUM_THREADS is set to non-zero (1) value
+If your program has OpenMP sections, this can cause over-subscription of cores and consequently poor performance
+To avoid this, please re-run your application after setting MV2_ENABLE_AFFINITY=0
+Use MV2_USE_THREAD_WARNING=0 to suppress this message
+0 NVME 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 72295.509486 10910.265080 45754.105097 21034.905383 11150.917108 5788.296704 0.000000
+1 NVME 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 46036.128903 8461.926049 43151.818928 20788.969841 10982.861375 5763.602163 0.000000
+Stream No: 1 0 1 
+Stream No: 2 0 1 
+Stream No: 3 0 1 
+Stream No: 4 0 1 
+Stream No: 5 0 1 
+Stream No: 6 0 1 
+Stream No: 7 0 1 
+Stream No: 8 0 1 
+Stream No: 9 0 1 
+Stream No: 10 0 1 
+Stream No: 11 0 1 
+Stream No: 12 0 1 
+Stream No: 13 0 1 
+Stream No: 14 0 1 
+Stream No: 15 0 1 
+Stream No: 16 0 1 
+Stream No: 17 0 1 
+Stream No: 18 0 1 
+Stream No: 19 0 1 
+Stream No: 20 0 1 
+Stream No: 21 0 1 
+Stream No: 22 0 1 
+Stream No: 23 0 1 
+Stream No: 24 0 1 
+Stream No: 25 0 1 
+Stream No: 26 0 1 
+Stream No: 27 0 1 
+Warning: Process to core binding is enabled and OMP_NUM_THREADS is set to non-zero (1) value
+If your program has OpenMP sections, this can cause over-subscription of cores and consequently poor performance
+To avoid this, please re-run your application after setting MV2_ENABLE_AFFINITY=0
+Use MV2_USE_THREAD_WARNING=0 to suppress this message
+Warning: Process to core binding is enabled and OMP_NUM_THREADS is set to non-zero (1) value
+If your program has OpenMP sections, this can cause over-subscription of cores and consequently poor performance
+To avoid this, please re-run your application after setting MV2_ENABLE_AFFINITY=0
+Use MV2_USE_THREAD_WARNING=0 to suppress this message
+slurmstepd: error: couldn't chdir to `/home/opatil/idnuma/identify_numa/char_numa_streams': No such file or directory: going to /tmp instead
+slurmstepd: error: execve(): /home/opatil/mpich-3.3.1/build/bin/hydra_pmi_proxy: No such file or directory
+srun: error: c29: task 23: Exited with exit code 2
+slurmstepd: error: run_script_as_user: couldn't change working dir to /home/opatil/idnuma/identify_numa/char_numa_streams: No such file or directory
+slurmstepd: error: *** STEP 121917.4 ON c0 CANCELLED AT 2019-06-26T18:14:59 ***
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+[mpiexec@c0] control_cb (pm/pmiserv/pmiserv_cb.c:208): assert (!closed) failed
+[mpiexec@c0] HYDT_dmxu_poll_wait_for_event (tools/demux/demux_poll.c:77): callback returned error status
+[mpiexec@c0] HYD_pmci_wait_for_completion (pm/pmiserv/pmiserv_pmci.c:196): error waiting for event
+[mpiexec@c0] main (ui/mpich/mpiexec.c:336): process manager error waiting for completion
+srun: error: SLURM job 121917 has expired.
+srun: Check SLURM_JOB_ID environment variable for expired or invalid job.
+rm -f  stream_numa_char
+mpicc -o stream_numa_char test2.c stream_numa_char.c stream_numa_char.h -O2 -fopenmp -lnuma -lm
+stream_numa_char.c: In function 'stream_numa_char_omp':
+stream_numa_char.c:289:12: warning: implicit declaration of function 'omp_get_num_threads' [-Wimplicit-function-declaration]
+     numt = omp_get_num_threads();
+            ^~~~~~~~~~~~~~~~~~~
+MPI
+Warning: Process to core binding is enabled and OMP_NUM_THREADS is set to non-zero (1) value
+If your program has OpenMP sections, this can cause over-subscription of cores and consequently poor performance
+To avoid this, please re-run your application after setting MV2_ENABLE_AFFINITY=0
+Use MV2_USE_THREAD_WARNING=0 to suppress this message
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+slurmstepd: error: *** STEP 121920.4 ON c0 CANCELLED AT 2019-06-26T19:38:46 ***
+srun: error: c0: task 0: Killed

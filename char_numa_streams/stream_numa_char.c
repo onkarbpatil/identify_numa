@@ -255,10 +255,10 @@ void stream_numa_char_omp(int argc, char ** argv){
                 }
                 i++;
         }
-	int mbs = 1024;
-	size_t size = mbs*1024*1024;
-	int r_size = 32768;
-	int c_size = 32768;
+	int mbs = 4*1024;
+	long long size = (long long)(4*1024)*(1024*1024);
+	int r_size = 2*32768;
+	int c_size = 2*32768;
 	double *a, *b, *c, *d, *e, *f, *g, *h;
 	double **aa, **bb, **cc;
 	clock_t start, end;
@@ -692,7 +692,7 @@ redo27:
                         for(j =0; j < (size/sizeof(double)); j++){
                             a[stride%(size/sizeof(double))] = h[stride%(size/sizeof(double))];
 			    if((j%8 == 0)&&(j != 0))
-				stride = j*65536; //65536 for KNL
+				stride = j*1441792; //65536 for KNL
 			    else
 				stride++;
                         }
@@ -792,10 +792,10 @@ void stream_numa_char_mpi(int argc, char ** argv){
                 }
                 i++;
         }
-	int mbs = 1024;
-	size_t size = mbs*1024*1024;
-	int r_size = 32768;
-	int c_size = 32768;
+	int mbs = 4*1024;
+	long long size = (long long)(4*1024)*(1024*1024);
+	int r_size = 2*32768;
+	int c_size = 2*32768;
 	double *a, *b, *c, *d, *e, *f, *g, *h;
 	double **aa, **bb, **cc;
 	clock_t start, end;
@@ -887,7 +887,7 @@ void stream_numa_char_mpi(int argc, char ** argv){
 
 
 
-			int l_start, l_end, mr_start, mr_end, mc_start, mc_end;
+			long long int l_start, l_end, mr_start, mr_end, mc_start, mc_end;
 			//l_start = (size/procs*/sizeof(double))*rank;
 			//l_end = (size/procs*/sizeof(double))*(rank+1);
 			//mr_start = ((r_size/procs)/sizeof(double))*rank;
@@ -903,6 +903,7 @@ void stream_numa_char_mpi(int argc, char ** argv){
 			mc_start = 0;//((c_size/procs)/sizeof(double));
 			mc_end = ((c_size/sqrt(procs))/sizeof(double));
 ////redo1:
+//printf("size %lld lstart %d lend %d\n",size, l_start, l_end);
 			MPI_Barrier(MPI_COMM_WORLD);
 			clock_gettime( CLOCK_MONOTONIC, &begin);
 //#pragma omp parallel for
@@ -916,8 +917,8 @@ void stream_numa_char_mpi(int argc, char ** argv){
 				g[j] = 7.0;
 				h[j] = 8.0;
 			}
-			clock_gettime( CLOCK_MONOTONIC, &stop);
 			MPI_Barrier(MPI_COMM_WORLD);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			if(rank == 0){
 				accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			////if(accum <= empty){
@@ -932,8 +933,8 @@ void stream_numa_char_mpi(int argc, char ** argv){
 			for(j = l_start;j < l_end;j++){
                             a[j] = 20 + b[j];
                         }
-			clock_gettime( CLOCK_MONOTONIC, &stop);
 			MPI_Barrier(MPI_COMM_WORLD);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			if(rank == 0){
 				accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			////if(accum <= empty){
@@ -948,8 +949,8 @@ void stream_numa_char_mpi(int argc, char ** argv){
 			for(j = l_start;j < l_end;j++){
                             a[j] = c[j] + b[j];
                         }
-			clock_gettime( CLOCK_MONOTONIC, &stop);
 			MPI_Barrier(MPI_COMM_WORLD);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			if(rank == 0){
 				accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			////if(accum <= empty){
@@ -964,8 +965,8 @@ void stream_numa_char_mpi(int argc, char ** argv){
 			for(j = l_start;j < l_end;j++){
                             a[j] = c[j] + d[j] + b[j];
                         }
-			clock_gettime( CLOCK_MONOTONIC, &stop);
 			MPI_Barrier(MPI_COMM_WORLD);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			if(rank == 0){
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			////if(accum <= empty){
@@ -981,8 +982,8 @@ void stream_numa_char_mpi(int argc, char ** argv){
 			for(j = l_start;j < l_end;j++){
                             a[j] = c[j] + d[j] + e[j] + b[j];
                         }
-			clock_gettime( CLOCK_MONOTONIC, &stop);
 			MPI_Barrier(MPI_COMM_WORLD);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			if(rank == 0){
 				accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			//	//if(accum <= empty){
@@ -997,8 +998,8 @@ void stream_numa_char_mpi(int argc, char ** argv){
                         for(j = l_start;j < l_end;j++){
                             a[j] = c[j] = b[j];
                         }
-			clock_gettime( CLOCK_MONOTONIC, &stop);
 			MPI_Barrier(MPI_COMM_WORLD);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			if(rank == 0){
 				accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			////if(accum <= empty){
@@ -1013,8 +1014,8 @@ void stream_numa_char_mpi(int argc, char ** argv){
 			for(j = l_start;j < l_end;j++){
                             a[j] = c[j] = d[j] + b[j];
                         }
-			clock_gettime( CLOCK_MONOTONIC, &stop);
 			MPI_Barrier(MPI_COMM_WORLD);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			if(rank == 0){
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			//if(accum <= empty){
@@ -1028,8 +1029,8 @@ void stream_numa_char_mpi(int argc, char ** argv){
 			for(j = l_start;j < l_end;j++){
                             a[j] = c[j] = d[j] + b[j]+ e[j];
                         }
-			clock_gettime( CLOCK_MONOTONIC, &stop);
 			MPI_Barrier(MPI_COMM_WORLD);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			if(rank == 0){
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			//if(accum <= empty){
@@ -1043,8 +1044,8 @@ void stream_numa_char_mpi(int argc, char ** argv){
 			for(j = l_start;j < l_end;j++){
                             a[j] = c[j] = d[j] + b[j]+ e[j] + f[j];
                         }
-			clock_gettime( CLOCK_MONOTONIC, &stop);
 			MPI_Barrier(MPI_COMM_WORLD);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			if(rank == 0){
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			//if(accum <= empty){
@@ -1058,8 +1059,8 @@ void stream_numa_char_mpi(int argc, char ** argv){
                         for(j = l_start;j < l_end;j++){
                             a[j] = c[j] = d[j] = e[j];
                         }
-			clock_gettime( CLOCK_MONOTONIC, &stop);
 			MPI_Barrier(MPI_COMM_WORLD);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			if(rank == 0){
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			//if(accum <= empty){
@@ -1073,8 +1074,8 @@ void stream_numa_char_mpi(int argc, char ** argv){
 			for(j = l_start;j < l_end;j++){
                             a[j] = c[j] = d[j] = b[j]+ e[j];
                         }
-			clock_gettime( CLOCK_MONOTONIC, &stop);
 			MPI_Barrier(MPI_COMM_WORLD);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			if(rank == 0){
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			//if(accum <= empty){
@@ -1088,8 +1089,8 @@ void stream_numa_char_mpi(int argc, char ** argv){
 			for(j = l_start;j < l_end;j++){
                             a[j] = c[j] = d[j] = b[j] + e[j] +f[j];
                         }
-			clock_gettime( CLOCK_MONOTONIC, &stop);
 			MPI_Barrier(MPI_COMM_WORLD);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			if(rank == 0){
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			//if(accum <= empty){
@@ -1103,8 +1104,8 @@ void stream_numa_char_mpi(int argc, char ** argv){
 			for(j = l_start;j < l_end;j++){
                             a[j] = c[j] = d[j] = b[j] + e[j] + f[j] +g[j];
                         }
-			clock_gettime( CLOCK_MONOTONIC, &stop);
 			MPI_Barrier(MPI_COMM_WORLD);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			if(rank == 0){
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			//if(accum <= empty){
@@ -1118,8 +1119,8 @@ void stream_numa_char_mpi(int argc, char ** argv){
                         for(j = l_start;j < l_end;j++){
                             a[j] = c[j] = d[j] = b[j] = e[j];
                         }
-			clock_gettime( CLOCK_MONOTONIC, &stop);
 			MPI_Barrier(MPI_COMM_WORLD);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			if(rank == 0){
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			//if(accum <= empty){
@@ -1133,8 +1134,8 @@ void stream_numa_char_mpi(int argc, char ** argv){
                         for(j = l_start;j < l_end;j++){
                             a[j] = c[j] = d[j] = b[j] = e[j] + f[j];
                         }
-			clock_gettime( CLOCK_MONOTONIC, &stop);
 			MPI_Barrier(MPI_COMM_WORLD);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			if(rank == 0){
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			//if(accum <= empty){
@@ -1148,8 +1149,8 @@ void stream_numa_char_mpi(int argc, char ** argv){
                         for(j = l_start;j < l_end;j++){
                             a[j] = c[j] = d[j] = b[j] = e[j] + f[j] +g[j];
                         }
-			clock_gettime( CLOCK_MONOTONIC, &stop);
 			MPI_Barrier(MPI_COMM_WORLD);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			if(rank == 0){
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			//if(accum <= empty){
@@ -1163,8 +1164,8 @@ void stream_numa_char_mpi(int argc, char ** argv){
                         for(j = l_start;j < l_end;j++){
                             a[j] = c[j] = d[j] = b[j] = e[j] + f[j] +g[j] + h[j];
                         }
-			clock_gettime( CLOCK_MONOTONIC, &stop);
 			MPI_Barrier(MPI_COMM_WORLD);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			if(rank == 0){
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			//if(accum <= empty){
@@ -1180,8 +1181,8 @@ void stream_numa_char_mpi(int argc, char ** argv){
                             a[(l_start + stride)%((size/procs)/sizeof(double))] = c[(l_start + stride)%((size/procs)/sizeof(double))] = d[(l_start + stride)%((size/procs)/sizeof(double))] = b[(l_start + stride)%((size/procs)/sizeof(double))] = e[(l_start + stride)%((size/procs)/sizeof(double))] + f[(l_start + stride)%((size/procs)/sizeof(double))] +g[(l_start + stride)%((size/procs)/sizeof(double))] + h[(l_start + stride)%((size/procs)/sizeof(double))];
 			    stride +=3;
                         }
-                        clock_gettime( CLOCK_MONOTONIC, &stop);
 			MPI_Barrier(MPI_COMM_WORLD);
+                        clock_gettime( CLOCK_MONOTONIC, &stop);
 			if(rank == 0){
                         accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			//if(accum <= empty){
@@ -1200,8 +1201,8 @@ void stream_numa_char_mpi(int argc, char ** argv){
 			    else
 				stride++;
                         }
-                        clock_gettime( CLOCK_MONOTONIC, &stop);
 			MPI_Barrier(MPI_COMM_WORLD);
+                        clock_gettime( CLOCK_MONOTONIC, &stop);
 			if(rank == 0){
                         accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			//if(accum <= empty){
@@ -1218,8 +1219,8 @@ void stream_numa_char_mpi(int argc, char ** argv){
 			    d[j] = e[j] + f[j] +g[j] + h[j];
 			    b[j] = e[j] + f[j] +g[j] + h[j];
                         }
-                        clock_gettime( CLOCK_MONOTONIC, &stop);
 			MPI_Barrier(MPI_COMM_WORLD);
+                        clock_gettime( CLOCK_MONOTONIC, &stop);
 			if(rank == 0){
                         accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			//if(accum <= empty){
@@ -1234,8 +1235,8 @@ void stream_numa_char_mpi(int argc, char ** argv){
 				for(k = mc_start; k < mc_end; k++)
                             		aa[j][k] = bb[j][k]*cc[j][k];
                         }
-			clock_gettime( CLOCK_MONOTONIC, &stop);
 			MPI_Barrier(MPI_COMM_WORLD);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			if(rank == 0){
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			//if(accum <= empty2){
@@ -1250,8 +1251,8 @@ void stream_numa_char_mpi(int argc, char ** argv){
 				for(k = mc_start; k < mc_end; k++)
                             		aa[k][j] = bb[k][j]*cc[k][j];
                         }
-			clock_gettime( CLOCK_MONOTONIC, &stop);
 			MPI_Barrier(MPI_COMM_WORLD);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			if(rank == 0){
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			//if(accum <= empty2){
@@ -1266,8 +1267,8 @@ void stream_numa_char_mpi(int argc, char ** argv){
 				for(k = mc_start; k < mc_end; k++)
                             		aa[j][k] = bb[j][k]*cc[k][j];
                         }
-			clock_gettime( CLOCK_MONOTONIC, &stop);
 			MPI_Barrier(MPI_COMM_WORLD);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			if(rank == 0){
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			//if(accum <= empty2){
@@ -1283,8 +1284,8 @@ void stream_numa_char_mpi(int argc, char ** argv){
 					if((k!=0)&&(k!=(mc_end - 1))&&(j!=0)&&(j!=(mr_end-1)))
                             			aa[j][k] = aa[j][k-1]+aa[j][k+1] + aa[j-1][k] + aa[j+1][k];
                         }
-			clock_gettime( CLOCK_MONOTONIC, &stop);
 			MPI_Barrier(MPI_COMM_WORLD);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			if(rank == 0){
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			//if(accum <= empty2){
@@ -1300,8 +1301,8 @@ void stream_numa_char_mpi(int argc, char ** argv){
                                         if((k!=0)&&(k!=(mc_end-1)))
                                                 aa[j][k] = aa[j][k-1]+aa[j][k+1];
                         }
-                        clock_gettime( CLOCK_MONOTONIC, &stop);
 			MPI_Barrier(MPI_COMM_WORLD);
+                        clock_gettime( CLOCK_MONOTONIC, &stop);
 			if(rank == 0){
                         accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			//if(accum <= empty2){
@@ -1317,8 +1318,8 @@ void stream_numa_char_mpi(int argc, char ** argv){
                                         if((k!=0)&&(k!=(mc_end-1))&&(j!=0)&&(j!=(mr_end-1)))
                                                 aa[j][k] = aa[j][k-1]+aa[j][k+1] + aa[j-1][k] + aa[j+1][k] + aa[j-1][k-1] + aa[j-1][k+1] + aa[j+1][k-1] + aa[j+1][k+1];
                         }
-                        clock_gettime( CLOCK_MONOTONIC, &stop);
 			MPI_Barrier(MPI_COMM_WORLD);
+                        clock_gettime( CLOCK_MONOTONIC, &stop);
 			if(rank == 0){
                         accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			//if(accum <= empty2){
@@ -1333,12 +1334,12 @@ void stream_numa_char_mpi(int argc, char ** argv){
                         for(j = l_start;j < l_end;j++){
                             a[(l_start + stride)%((size/procs)/sizeof(double))] = h[(l_start + stride)%((size/procs)/sizeof(double))];
 			    if((j%8 == 0)&&(j != 0))
-				stride = j*65536; //65536 for KNL
+				stride = j*1441792; //65536 for KNL
 			    else
 				stride++;
                         }
-                        clock_gettime( CLOCK_MONOTONIC, &stop);
 			MPI_Barrier(MPI_COMM_WORLD);
+                        clock_gettime( CLOCK_MONOTONIC, &stop);
 			if(rank == 0){
                         accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
                         //if(accum <= empty){
