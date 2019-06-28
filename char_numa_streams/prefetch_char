@@ -8,7 +8,7 @@ set datafile separator whitespace
      set xlabel "Stride length (bytes)"
      set ylabel "Time (seconds)"
          set y2label "Bandwidth (MB/s)"
-     set yrange [0:0.000003000]
+     set yrange [0:0.0000003000]
      set y2range [0:2000]
 #     set logscale y2 10
      set ytics nomirror
