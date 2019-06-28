@@ -1,6 +1,7 @@
 set terminal pdf                                                                                                                                                                         
          set size 2, 0.7
 set output 'prefetch.pdf'
+set datafile separator whitespace
      #set key center bottom outside vertical width 3 height 10 title " "
      set key center bottom outside vertical maxrows 3 title " "
      set title "Prefetching for skylake"
