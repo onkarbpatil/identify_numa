@@ -12,11 +12,31 @@
 #define BILLION  1000000000L;
 
 int main(){
+	int max_node;
+	int total_numa_nodes = 0;
+	int * numa_node_ids;
+	max_node = numa_max_node() + 1;
+	int cpu_count = numa_num_possible_cpus();
+	numa_node_ids = (int*)malloc(sizeof(int)*max_node);
+	struct bitmask * numa_nodes = numa_get_membind();
+	int n = 0;
+	while(n < numa_nodes->size){
+		if(numa_bitmask_isbitset(numa_nodes, n)){
+			numa_node_ids[total_numa_nodes] = n;
+			total_numa_nodes++;
+		}
+		n++;
+	}
+	n = 0;
+	while(n < total_numa_nodes){
+		printf("Numa id: %d\n", n);
         int * arr1;
         int * arr2;
 //        int * arr3;
-        arr1 = (int *)malloc((long long int)(4*1024)*(1024*1024));
-        arr2 = (int *)malloc(512*1024*1024);
+        long long int size1 = ((long long int)(4*1024)*(1024*1024));
+        long long int size2 = (long long int)(512*1024*1024);
+	arr1 = (int *)numa_alloc_onnode(size1, numa_node_ids[n]);
+	arr2 = (int *)numa_alloc_onnode(size2, numa_node_ids[n]);
 //        arr3 = (int *)malloc(512*1024*1024);
         int i = 1;
         int j = 0;
@@ -31,7 +51,7 @@ int main(){
                // arr3[j] = j*5;
         }
 printf("Read\n");
-        while(i < (((36*1024*1024)/sizeof(int))+1)){
+        while(i < (((40*1024*1024)/sizeof(int))+1)){
                 j = 0;
                         clock_gettime( CLOCK_MONOTONIC, &begin);
                 while(j < ((((long long int)(4*1024)*(1024*1024))/sizeof(int)))){
@@ -65,8 +85,10 @@ printf("Write\n");
 			arr2[k]+=arr2[k]-k;
 		dp = arr2[k/4];
         }
-        free(arr1);
-        free(arr2);
+        numa_free(arr1, size1);
+        numa_free(arr2, size2);
         //free(arr3);
+	n++;
+	}
         return 1;
 }
