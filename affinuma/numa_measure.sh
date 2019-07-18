@@ -2,7 +2,7 @@
 
 module load cuda/10.1
 
-output=$(numactl -H | grep -h "cpus" | tr ' ' '\n')
+output=$(numactl -H | grep -h "cpus" | tr ' ' '\n')	#identifying the cpu sets from numactl
 flag1="false"
 flag2="false"
 flag3="false"
@@ -43,24 +43,23 @@ if [ "${f_cpu}" != -1 ] && [ "${l_cpu}" != -1 ]; then
   node_map["${f_cpu}-${l_cpu}"]=$(($l_cpu-$f_cpu+1))
 fi
 
-cd gpu-test
+cd gpu-test				#running gpu-test to map gpu nodes to numa
 out=$(make clean)
 out=$(make)
 ./gpu_numa
 
-cd ..
+cd ..					#running affinuma to label numa nodes as slow and fast memory
 out=$(make clean)
 out=$(make)
 
 for j in ${!node_map[@]}
 do
-#	echo "CPUs $j"
 	thr=${node_map[$j]}
 	export OMP_NUM_THREADS="$thr"
 	numactl -C "$j" ./affinuma "$j"
 done
 
-cd affigpu
+cd affigpu				#running affigpu to label numa nodes as slow and fast memory
 out=$(make clean)
 out=$(make)
 ./affigpu
