@@ -150,15 +150,17 @@ void numatest(int argc, char ** argv){
                 }
                 i++;
         }
-	int mbs = 256*1024;
-	size_t size = mbs*1024*1024;
-	int r_size = 16*32768;
-	int c_size = 16*32768;
+	unsigned long size = 1<<30;
+	int mbs = size/sizeof(double);
+	int r_size = 32768;
+	int c_size = 32768;
+	int * rand_tab;
+	rand_tab = (int*)malloc(mbs*sizeof(int));
 	double *a, *b, *c, *d, *e, *f, *g, *h;
 	double **aa, **bb, **cc;
 	clock_t start, end;
 	struct timespec begin, stop;
-	srand(clock());
+	srand(10725);
 	sleep(10);
 	if(argc == 0){
 		printf("Enter memory technologies available in ascending order of speed. eg: GPU NVRAM DRAM HBM\n");
@@ -173,6 +175,8 @@ void numatest(int argc, char ** argv){
 		}
 
 	}
+	for(i=0; i< size/sizeof(double); i++)
+		rand_tab[i]=rand()%(size/sizeof(double));
 #ifdef _OPENMP
 #pragma omp parallel private(numt)
     {
@@ -211,7 +215,8 @@ void numatest(int argc, char ** argv){
 		long double f_sten_avg = 0.0;
 		long double n_sten_avg = 0.0;
 		long double accum;
-		for( iters = 0; iters < 10; iters++){
+		for( iters = 0; iters < 10; iters++)
+		{
 			int j = 0;
 			int k = 0;
 			a = (double*)numa_alloc_onnode(size, numa_node_ids[i]);
@@ -238,7 +243,7 @@ void numatest(int argc, char ** argv){
 			long double empty2=0.0;
 
 redo1:
-			clock_gettime( CLOCK_REALTIME, &begin);
+			clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
 			for(j = 0;j < (size/sizeof(double));j++){
 				a[j] = 1.0;
@@ -250,199 +255,199 @@ redo1:
 				g[j] = 7.0;
 				h[j] = 8.0;
 			}
-			clock_gettime( CLOCK_REALTIME, &stop);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			if(accum <= empty){
 				goto redo1;
 			}
 			wr_only_avg += ((8*size*1.0E-06)/(long double)(accum - empty));
 redo2:
-			clock_gettime( CLOCK_REALTIME, &begin);
+			clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
 			for(j =0; j < (size/sizeof(double)); j++){
                             a[j] = 20 + b[j];
                         }
-			clock_gettime( CLOCK_REALTIME, &stop);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			if(accum <= empty){
 				goto redo2;
 			}
 			owor_avg += ((2*size*1.0E-06)/(long double)(accum - empty));
 redo3:
-			clock_gettime( CLOCK_REALTIME, &begin);
+			clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
 			for(j =0; j < (size/sizeof(double)); j++){
                             a[j] = c[j] + b[j];
                         }
-			clock_gettime( CLOCK_REALTIME, &stop);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			if(accum <= empty){
 				goto redo3;
 			}
 			owtr_avg += ((3*size*1.0E-06)/(long double)(accum - empty));
 redo4:
-			clock_gettime( CLOCK_REALTIME, &begin);
+			clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
 			for(j =0; j < (size/sizeof(double)); j++){
                             a[j] = c[j] + d[j] + b[j];
                         }
-			clock_gettime( CLOCK_REALTIME, &stop);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			if(accum <= empty){
 				goto redo4;
 			}
 			owthr_avg += ((4*size*1.0E-06)/(long double)(accum - empty));
 redo5:
-			clock_gettime( CLOCK_REALTIME, &begin);
+			clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
 			for(j =0; j < (size/sizeof(double)); j++){
                             a[j] = c[j] + d[j] + e[j] + b[j];
                         }
-			clock_gettime( CLOCK_REALTIME, &stop);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			if(accum <= empty){
 				goto redo5;
 			}
 			owfr_avg += ((5*size*1.0E-06)/(long double)(accum - empty));
 redo6:
-			clock_gettime( CLOCK_REALTIME, &begin);
+			clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
                         for(j =0; j < (size/sizeof(double)); j++){
                             a[j] = c[j] = b[j];
                         }
-			clock_gettime( CLOCK_REALTIME, &stop);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			if(accum <= empty){
 				goto redo6;
 			}
 			twor_avg += ((3*size*1.0E-06)/(long double)(accum - empty));
 redo7:
-			clock_gettime( CLOCK_REALTIME, &begin);
+			clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
 			for(j =0; j < (size/sizeof(double)); j++){
                             a[j] = c[j] = d[j] + b[j];
                         }
-			clock_gettime( CLOCK_REALTIME, &stop);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			if(accum <= empty){
 				goto redo7;
 			}
 			twtr_avg += ((4*size*1.0E-06)/(long double)(accum - empty));
 redo8:
-			clock_gettime( CLOCK_REALTIME, &begin);
+			clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
 			for(j =0; j < (size/sizeof(double)); j++){
                             a[j] = c[j] = d[j] + b[j]+ e[j];
                         }
-			clock_gettime( CLOCK_REALTIME, &stop);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			if(accum <= empty){
 				goto redo8;
 			}
 			twthr_avg += ((5*size*1.0E-06)/(long double)(accum - empty));
 redo9:
-			clock_gettime( CLOCK_REALTIME, &begin);
+			clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
 			for(j =0; j < (size/sizeof(double)); j++){
                             a[j] = c[j] = d[j] + b[j]+ e[j] + f[j];
                         }
-			clock_gettime( CLOCK_REALTIME, &stop);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			if(accum <= empty){
 				goto redo9;
 			}
 			twfr_avg += ((6*size*1.0E-06)/(long double)(accum - empty));
 redo10:
-			clock_gettime( CLOCK_REALTIME, &begin);
+			clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
                         for(j =0; j < (size/sizeof(double)); j++){
                             a[j] = c[j] = d[j] = e[j];
                         }
-			clock_gettime( CLOCK_REALTIME, &stop);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			if(accum <= empty){
 				goto redo10;
 			}
 			thwor_avg += ((4*size*1.0E-06)/(long double)(accum - empty));
 redo11:
-			clock_gettime( CLOCK_REALTIME, &begin);
+			clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
 			for(j =0; j < (size/sizeof(double)); j++){
                             a[j] = c[j] = d[j] = b[j]+ e[j];
                         }
-			clock_gettime( CLOCK_REALTIME, &stop);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			if(accum <= empty){
 				goto redo11;
 			}
 			thwtr_avg += ((5*size*1.0E-06)/(long double)(accum - empty));
 redo12:
-			clock_gettime( CLOCK_REALTIME, &begin);
+			clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
 			for(j =0; j < (size/sizeof(double)); j++){
                             a[j] = c[j] = d[j] = b[j] + e[j] +f[j];
                         }
-			clock_gettime( CLOCK_REALTIME, &stop);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			if(accum <= empty){
 				goto redo12;
 			}
 			thwthr_avg += ((6*size*1.0E-06)/(long double)(accum - empty));
 redo13:
-			clock_gettime( CLOCK_REALTIME, &begin);
+			clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
 			for(j =0; j < (size/sizeof(double)); j++){
                             a[j] = c[j] = d[j] = b[j] + e[j] + f[j] +g[j];
                         }
-			clock_gettime( CLOCK_REALTIME, &stop);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			if(accum <= empty){
 				goto redo13;
 			}
 			thwfr_avg += ((7*size*1.0E-06)/(long double)(accum - empty));
 redo14:
-			clock_gettime( CLOCK_REALTIME, &begin);
+			clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
                         for(j =0; j < (size/sizeof(double)); j++){
                             a[j] = c[j] = d[j] = b[j] = e[j];
                         }
-			clock_gettime( CLOCK_REALTIME, &stop);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			if(accum <= empty){
 				goto redo14;
 			}
 			fwor_avg += ((5*size*1.0E-06)/(long double)(accum - empty));
 redo15:
-			clock_gettime( CLOCK_REALTIME, &begin);
+			clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
                         for(j =0; j < (size/sizeof(double)); j++){
                             a[j] = c[j] = d[j] = b[j] = e[j] + f[j];
                         }
-			clock_gettime( CLOCK_REALTIME, &stop);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			if(accum <= empty){
 				goto redo15;
 			}
 			fwtr_avg += ((6*size*1.0E-06)/(long double)(accum - empty));
 redo16:
-			clock_gettime( CLOCK_REALTIME, &begin);
+			clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
                         for(j =0; j < (size/sizeof(double)); j++){
                             a[j] = c[j] = d[j] = b[j] = e[j] + f[j] +g[j];
                         }
-			clock_gettime( CLOCK_REALTIME, &stop);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			if(accum <= empty){
 				goto redo16;
 			}
 			fwthr_avg += ((7*size*1.0E-06)/(long double)(accum - empty));
 redo17:
-			clock_gettime( CLOCK_REALTIME, &begin);
+			clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
                         for(j =0; j < (size/sizeof(double)); j++){
                             a[j] = c[j] = d[j] = b[j] = e[j] + f[j] +g[j] + h[j];
                         }
-			clock_gettime( CLOCK_REALTIME, &stop);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			if(accum <= empty){
 				goto redo17;
@@ -450,13 +455,13 @@ redo17:
 			fwfr_avg += ((8*size*1.0E-06)/(long double)(accum - empty));
 redo18:
 			stride = 0;
-			clock_gettime( CLOCK_REALTIME, &begin);
+			clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
                         for(j =0; j < (size/sizeof(double)); j++){
                             a[stride%(size/sizeof(double))] = c[stride%(size/sizeof(double))] = d[stride%(size/sizeof(double))] = b[stride%(size/sizeof(double))] = e[stride%(size/sizeof(double))] + f[stride%(size/sizeof(double))] +g[stride%(size/sizeof(double))] + h[stride%(size/sizeof(double))];
 			    stride +=3;
                         }
-                        clock_gettime( CLOCK_REALTIME, &stop);
+                        clock_gettime( CLOCK_MONOTONIC, &stop);
                         accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			if(accum <= empty){
 				goto redo18;
@@ -464,23 +469,19 @@ redo18:
 			str_avg += ((8*size*1.0E-06)/(long double)(accum - empty));
 redo19:
 			stride = 0;
-                        clock_gettime( CLOCK_REALTIME, &begin);
+                        clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
                         for(j =0; j < (size/sizeof(double)); j++){
-                            a[stride%(size/sizeof(double))] = c[stride%(size/sizeof(double))] = d[stride%(size/sizeof(double))] = b[stride%(size/sizeof(double))] = e[stride%(size/sizeof(double))] + f[stride%(size/sizeof(double))] +g[stride%(size/sizeof(double))] + h[stride%(size/sizeof(double))];
-			    if((j%8 == 0)&&(j != 0))
-                            	stride = (int)(((j+13)*37)/((j+10)*23));
-			    else
-				stride++;
+			  a[rand_tab[j]] = b[rand_tab[j]] + c[rand_tab[j]] + d[rand_tab[j]] + e[rand_tab[j]];
                         }
-                        clock_gettime( CLOCK_REALTIME, &stop);
+                        clock_gettime( CLOCK_MONOTONIC, &stop);
                         accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			if(accum <= empty){
 				goto redo19;
 			}
-			rand_avg += ((8*size*1.0E-06)/(long double)(accum - empty));
+			rand_avg += ((5*size*1.0E-06)/(long double)(accum - empty));
 redo20:
-                        clock_gettime( CLOCK_REALTIME, &begin);
+                        clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
                         for(j =0; j < (size/sizeof(double)); j++){
                             a[j] = e[j] + f[j] +g[j] + h[j];
@@ -488,88 +489,88 @@ redo20:
 			    d[j] = e[j] + f[j] +g[j] + h[j];
 			    b[j] = e[j] + f[j] +g[j] + h[j];
                         }
-                        clock_gettime( CLOCK_REALTIME, &stop);
+                        clock_gettime( CLOCK_MONOTONIC, &stop);
                         accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			if(accum <= empty){
 				goto redo20;
 			}
 			diff_avg += ((8*size*1.0E-06)/(long double)(accum - empty));
 redo21:
-			clock_gettime( CLOCK_REALTIME, &begin);
+			clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
                         for(j =0; j < (r_size/sizeof(double*)); j++){
 				for(k = 0; k < (c_size/sizeof(double)); k++)
                             		aa[j][k] = bb[j][k]*cc[j][k];
                         }
-			clock_gettime( CLOCK_REALTIME, &stop);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			if(accum <= empty2){
 				goto redo21;
 			}
 			row_avg += ((long double)(3*(long)r_size*c_size*1.0E-06)/(long double)(accum - empty2));
 redo22:
-			clock_gettime( CLOCK_REALTIME, &begin);
+			clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
                         for(j =0; j < (r_size/sizeof(double*)); j++){
 				for(k = 0; k < (c_size/sizeof(double)); k++)
                             		aa[k][j] = bb[k][j]*cc[k][j];
                         }
-			clock_gettime( CLOCK_REALTIME, &stop);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			if(accum <= empty2){
 				goto redo22;
 			}
 			col_avg += ((long double)(3*(long)r_size*c_size*1.0E-06)/(long double)(accum - empty2));
 redo23:
-			clock_gettime( CLOCK_REALTIME, &begin);
+			clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
                         for(j =0; j < (r_size/sizeof(double*)); j++){
 				for(k = 0; k < (c_size/sizeof(double)); k++)
                             		aa[j][k] = bb[j][k]*cc[k][j];
                         }
-			clock_gettime( CLOCK_REALTIME, &stop);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			if(accum <= empty2){
 				goto redo23;
 			}
 			rc_avg += ((long double)(3*(long)r_size*c_size*1.0E-06)/(long double)(accum - empty2));
 redo24:
-			clock_gettime( CLOCK_REALTIME, &begin);
+			clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
                         for(j =0; j < (r_size/sizeof(double*)); j++){
 				for(k = 0; k < (c_size/sizeof(double)); k++)
 					if((k!=0)&&(k!=((c_size/sizeof(double))-1))&&(j!=0)&&(j!=((r_size/sizeof(double*))-1)))
                             			aa[j][k] = aa[j][k-1]+aa[j][k+1] + aa[j-1][k] + aa[j+1][k];
                         }
-			clock_gettime( CLOCK_REALTIME, &stop);
+			clock_gettime( CLOCK_MONOTONIC, &stop);
 			accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			if(accum <= empty2){
 				goto redo24;
 			}
 			f_sten_avg += ((long double)(((long)r_size-1)*((long)c_size-1)*1.0E-06)/(long double)(accum - empty2));
 redo25:
-			clock_gettime( CLOCK_REALTIME, &begin);
+			clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
                         for(j =0; j < (r_size/sizeof(double*)); j++){
                                 for(k = 0; k < (c_size/sizeof(double)); k++)
                                         if((k!=0)&&(k!=((c_size/sizeof(double))-1)))
                                                 aa[j][k] = aa[j][k-1]+aa[j][k+1];
                         }
-                        clock_gettime( CLOCK_REALTIME, &stop);
+                        clock_gettime( CLOCK_MONOTONIC, &stop);
                         accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			if(accum <= empty2){
 				goto redo25;
 			}
 			t_sten_avg += ((long double)(((long)r_size)*(c_size)*1.0E-06)/(long double)(accum - empty2));
 redo26:
-			clock_gettime( CLOCK_REALTIME, &begin);
+			clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
                         for(j =0; j < (r_size/sizeof(double*)); j++){
                                 for(k = 0; k < (c_size/sizeof(double)); k++)
                                         if((k!=0)&&(k!=((c_size/sizeof(double))-1))&&(j!=0)&&(j!=((r_size/sizeof(double*))-1)))
                                                 aa[j][k] = aa[j][k-1]+aa[j][k+1] + aa[j-1][k] + aa[j+1][k] + aa[j-1][k-1] + aa[j-1][k+1] + aa[j+1][k-1] + aa[j+1][k+1];
                         }
-                        clock_gettime( CLOCK_REALTIME, &stop);
+                        clock_gettime( CLOCK_MONOTONIC, &stop);
                         accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
 			if(accum <= empty2){
 				goto redo26;
@@ -577,7 +578,7 @@ redo26:
 			n_sten_avg += ((long double)(((long)r_size-1)*((long)c_size-1)*1.0E-06)/(long double)(accum - empty2));
 redo27:
 			stride = 0;
-                        clock_gettime( CLOCK_REALTIME, &begin);
+                        clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
                         for(j =0; j < (size/sizeof(double)); j++){
                             a[stride%(size/sizeof(double))] = h[stride%(size/sizeof(double))];
@@ -586,7 +587,7 @@ redo27:
 			    else
 				stride++;
                         }
-                        clock_gettime( CLOCK_REALTIME, &stop);
+                        clock_gettime( CLOCK_MONOTONIC, &stop);
                         accum = ( stop.tv_sec - begin.tv_sec ) + (long double)( stop.tv_nsec - begin.tv_nsec ) / (long double)BILLION;
                         if(accum <= empty){
                                 goto redo27;

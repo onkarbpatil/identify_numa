@@ -4,7 +4,7 @@ thr=8
 node_range=0-23
 export OMP_NUM_THREADS=1
 echo "0-23 Upto 24 threads\n" >> memory_characterization
-echo "$thr:\n" >> memory_characterization
+echo "1:\n" >> memory_characterization
 numactl -C $node_range ./numatest >> memory_characterization
 while [ $thr -lt 25 ]; do
 	export OMP_NUM_THREADS=$thr
@@ -16,7 +16,7 @@ thr=8
 node_range=24-47 
 export OMP_NUM_THREADS=1
 echo "24-47 Upto 24 threads\n" >> memory_characterization
-echo "$thr:\n" >> memory_characterization
+echo "1:\n" >> memory_characterization
 numactl -C $node_range ./numatest >> memory_characterization
 while [ $thr -lt 25 ]; do
         export OMP_NUM_THREADS=$thr
@@ -28,7 +28,7 @@ thr=8
 node_range=48-71 
 export OMP_NUM_THREADS=1
 echo "48-71 Upto 24 threads\n" >> memory_characterization
-echo "$thr:\n" >> memory_characterization
+echo "1:\n" >> memory_characterization
 numactl -C $node_range ./numatest >> memory_characterization
 while [ $thr -lt 25 ]; do
         export OMP_NUM_THREADS=$thr
@@ -40,7 +40,7 @@ thr=8
 node_range=72-95 
 export OMP_NUM_THREADS=1
 echo "72-95 Upto 24 threads\n" >> memory_characterization
-echo "$thr:\n" >> memory_characterization
+echo "1:\n" >> memory_characterization
 numactl -C $node_range ./numatest >> memory_characterization
 while [ $thr -lt 25 ]; do
         export OMP_NUM_THREADS=$thr
@@ -110,7 +110,7 @@ done
 thr=56
 node_range=24-95
 echo "24-95 Upto 72 threads\n" >> memory_characterization
-while [ $thr -lt 72 ]; do
+while [ $thr -lt 73 ]; do
         export OMP_NUM_THREADS=$thr
         echo "$thr:\n" >> memory_characterization
         numactl -C $node_range ./numatest >> memory_characterization
