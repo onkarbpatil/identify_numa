@@ -547,7 +547,7 @@ redo24:
 			if(accum <= empty2){
 				goto redo24;
 			}
-			f_sten_avg += ((long double)(((long)r_size-1)*((long)c_size-1)*1.0E-06)/(long double)(accum - empty2));
+			f_sten_avg += 5*((long double)(((long)r_size-1)*((long)c_size-1)*1.0E-06)/(long double)(accum - empty2));
 redo25:
 			clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
@@ -561,7 +561,7 @@ redo25:
 			if(accum <= empty2){
 				goto redo25;
 			}
-			t_sten_avg += ((long double)(((long)r_size)*(c_size)*1.0E-06)/(long double)(accum - empty2));
+			t_sten_avg += 3*((long double)(((long)r_size)*(c_size)*1.0E-06)/(long double)(accum - empty2));
 redo26:
 			clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
@@ -575,15 +575,15 @@ redo26:
 			if(accum <= empty2){
 				goto redo26;
 			}
-			n_sten_avg += ((long double)(((long)r_size-1)*((long)c_size-1)*1.0E-06)/(long double)(accum - empty2));
+			n_sten_avg += 9*((long double)(((long)r_size-1)*((long)c_size-1)*1.0E-06)/(long double)(accum - empty2));
 redo27:
 			stride = 0;
                         clock_gettime( CLOCK_MONOTONIC, &begin);
 #pragma omp parallel for
                         for(j =0; j < (size/sizeof(double)); j++){
-                            a[stride%(size/sizeof(double))] = h[stride%(size/sizeof(double))];
+                            a[stride%(size/sizeof(double))] = b[stride%(size/sizeof(double))] + c[stride%(size/sizeof(double))] + h[stride%(size/sizeof(double))];
 			    if((j%8 == 0)&&(j != 0))
-				stride = j*65536; //65536 for KNL
+				stride = j*4757914; //65536 for KNL
 			    else
 				stride++;
                         }
